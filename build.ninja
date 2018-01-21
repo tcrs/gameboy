@@ -13,29 +13,7 @@ rule lib
 rule link
     command = gcc $ldflags -o $out $in $libs
 
-rule lit-doc
-    command = tools/literate.py --css=default.css --css=defaults-pygments.css --title Gameboy -o $out $in
-
-rule lit-code
-    command = tools/literate.py --code $root -o $out $in
-
-build src/gameboy.c : lit-code gameboy.lit | tools/literate.py
-    root = gameboy.c
-
-build src/gameboy.h : lit-code gameboy.lit | tools/literate.py
-    root = gameboy.h
-
-build docs/gameboy.html : lit-doc gameboy.lit | tools/literate.py
-
-build $builddir/gameboy.o : cc src/gameboy.c || src/gameboy.h
-build $builddir/gameboy.a : lib $builddir/gameboy.o
+gbroot = ./
+include incbuild.ninja
 
 build gameboy : phony src/gameboy.c src/gameboy.h docs/gameboy.html
-
-build $builddir/sboy.o : cc src/sboy.c || src/gameboy.h
-build $builddir/sboy : link $builddir/sboy.o $builddir/gameboy.a
-    libs = -lSDL2 -lpng -lminizip
-
-build $builddir/xboy.o : cc src/xboy.c || src/gameboy.h
-build $builddir/xboy : link $builddir/xboy.o $builddir/gameboy.a
-    libs = -lSDL2 -lpng -lminizip

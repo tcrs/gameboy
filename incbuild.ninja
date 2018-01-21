@@ -1,0 +1,24 @@
+rule lit-doc
+    command = $gbroot/tools/literate.py --css=default.css --css=defaults-pygments.css --title Gameboy -o $out $in
+
+rule lit-code
+    command = $gbroot/tools/literate.py --code $root -o $out $in
+
+build $gbroot/src/gameboy.c : lit-code $gbroot/gameboy.lit | $gbroot/tools/literate.py
+    root = gameboy.c
+
+build $gbroot/src/gameboy.h : lit-code $gbroot/gameboy.lit | $gbroot/tools/literate.py
+    root = gameboy.h
+
+build $gbroot/docs/gameboy.html : lit-doc $gbroot/gameboy.lit | $gbroot/tools/literate.py
+
+build $builddir/gameboy.o : cc $gbroot/src/gameboy.c || $gbroot/src/gameboy.h
+build $builddir/libgameboy.a : lib $builddir/gameboy.o
+
+build $builddir/sboy.o : cc $gbroot/src/sboy.c || $gbroot/src/gameboy.h
+build $builddir/sboy : link $builddir/sboy.o $builddir/libgameboy.a
+    libs = -lSDL2 -lpng -lminizip
+
+build $builddir/xboy.o : cc $gbroot/src/xboy.c || $gbroot/src/gameboy.h
+build $builddir/xboy : link $builddir/xboy.o $builddir/libgameboy.a
+    libs = -lSDL2 -lpng -lminizip
