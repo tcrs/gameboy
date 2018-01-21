@@ -3,7 +3,11 @@ as an emulator in literate C. There is still a lot to do, and I'm working
 slowly! The goal is not to produce a particularly fast emulator, but rather to
 try and explain how the Gameboy works in a clear and concise manner.
 
+You can read the [current documentation online now][ghpages]
+
 Note: Currently doesn't support sound at all!
+
+[ghpages]: https://tcrs.github.io/gameboy/
 
 # Literate programming
 
