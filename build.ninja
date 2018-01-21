@@ -1,0 +1,41 @@
+builddir = build
+
+cflags = -Wall -Wno-unused-function -ggdb -O0
+ldflags = -ggdb
+
+rule cc
+    command = gcc -MMD -MF $out.d -std=c99 $cflags -c $in -o $out
+    depfile = $out.d
+
+rule lib
+    command = rm -f $out && ar cr $out $in
+
+rule link
+    command = gcc $ldflags -o $out $in $libs
+
+rule lit-doc
+    command = tools/literate.py --css=default.css --css=defaults-pygments.css --title Gameboy -o $out $in
+
+rule lit-code
+    command = tools/literate.py --code $root -o $out $in
+
+build src/gameboy.c : lit-code gameboy.lit | tools/literate.py
+    root = gameboy.c
+
+build src/gameboy.h : lit-code gameboy.lit | tools/literate.py
+    root = gameboy.h
+
+build doc/gameboy.html : lit-doc gameboy.lit | tools/literate.py
+
+build $builddir/gameboy.o : cc src/gameboy.c || src/gameboy.h
+build $builddir/gameboy.a : lib $builddir/gameboy.o
+
+build gameboy : phony src/gameboy.c src/gameboy.h doc/gameboy.html
+
+build $builddir/sboy.o : cc src/sboy.c || src/gameboy.h
+build $builddir/sboy : link $builddir/sboy.o $builddir/gameboy.a
+    libs = -lSDL2 -lpng -lminizip
+
+build $builddir/xboy.o : cc src/xboy.c || src/gameboy.h
+build $builddir/xboy : link $builddir/xboy.o $builddir/gameboy.a
+    libs = -lSDL2 -lpng -lminizip
