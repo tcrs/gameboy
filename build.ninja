@@ -25,12 +25,12 @@ build src/gameboy.c : lit-code gameboy.lit | tools/literate.py
 build src/gameboy.h : lit-code gameboy.lit | tools/literate.py
     root = gameboy.h
 
-build doc/gameboy.html : lit-doc gameboy.lit | tools/literate.py
+build docs/gameboy.html : lit-doc gameboy.lit | tools/literate.py
 
 build $builddir/gameboy.o : cc src/gameboy.c || src/gameboy.h
 build $builddir/gameboy.a : lib $builddir/gameboy.o
 
-build gameboy : phony src/gameboy.c src/gameboy.h doc/gameboy.html
+build gameboy : phony src/gameboy.c src/gameboy.h docs/gameboy.html
 
 build $builddir/sboy.o : cc src/sboy.c || src/gameboy.h
 build $builddir/sboy : link $builddir/sboy.o $builddir/gameboy.a

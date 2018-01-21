@@ -47,7 +47,7 @@ the same ROM and RAM. This is a bit of a prototype but seems to basically work.
 
 You can build the library and examples using [`ninja`][ninja]. This will The
 build produces both source code of the emulation library (`src/gameboy.h`,
-`src/gameboy.c`), and the readable document (`doc/gameboy.html`).
+`src/gameboy.c`), and the readable document (`docs/gameboy.html`).
 
 I have included pre-generated versions of `gameboy.c` and `gameboy.h`. If you
 want to include this library into your own application you can either use the
