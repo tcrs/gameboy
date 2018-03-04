@@ -2940,6 +2940,9 @@ still count towards the object count of that scanline!</p>
                 <span class="k">if</span><span class="p">(</span><span class="n">insPos</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
                     <span class="kt">uint8_t</span> <span class="n">tile</span> <span class="o">=</span> <span class="n">gb</span><span class="o">-&gt;</span><span class="n">mem</span><span class="p">.</span><span class="n">OAM</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">];</span>
                     <span class="kt">uint8_t</span> <span class="n">attr</span> <span class="o">=</span> <span class="n">gb</span><span class="o">-&gt;</span><span class="n">mem</span><span class="p">.</span><span class="n">OAM</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">];</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">spriteHeight</span> <span class="o">==</span> <span class="mi">16</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">tile</span> <span class="o">&amp;=</span> <span class="mh">0xFE</span><span class="p">;</span>
+                    <span class="p">}</span>
 
                     <span class="kt">unsigned</span> <span class="n">tileY</span> <span class="o">=</span> <span class="n">scanlineNum</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">-</span> <span class="n">ypos</span><span class="p">;</span>
                     <span class="k">if</span><span class="p">(</span><span class="n">attr</span> <span class="o">&amp;</span> <span class="mh">0x40</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* Y Flip */</span>

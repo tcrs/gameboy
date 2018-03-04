@@ -1357,6 +1357,9 @@ static void video_readSprites(struct Gameboy* gb, int scanlineNum)
                 if(insPos < 10) {
                     uint8_t tile = gb->mem.OAM[i + 2];
                     uint8_t attr = gb->mem.OAM[i + 3];
+                    if(spriteHeight == 16) {
+                        tile &= 0xFE;
+                    }
 
                     unsigned tileY = scanlineNum + 16 - ypos;
                     if(attr & 0x40) { /* Y Flip */
