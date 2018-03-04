@@ -91,9 +91,12 @@ and makes the code easier to understand.</p>
 <li><a href="#video-emulation">Video emulation</a><ul>
 <li><a href="#palettes-0xff47-0xff49">Palettes (0xFF47 - 0xFF49)</a></li>
 <li><a href="#video-control-registers">Video control registers</a></li>
+<li><a href="#lcd-control-0xff40">LCD Control (0xFF40)</a></li>
+<li><a href="#lcd-status-0xff41">LCD Status (0xFF41)</a></li>
+<li><a href="#lcd-y-y-compare-0xff44-0xff45">LCD Y &amp; Y Compare (0xFF44 &amp; 0xFF45)</a></li>
 <li><a href="#background">Background</a></li>
 <li><a href="#window">Window</a></li>
-<li><a href="#objects">Objects</a></li>
+<li><a href="#objects-sprites">Objects (Sprites)</a></li>
 <li><a href="#pixel-rendering">Pixel rendering</a></li>
 <li><a href="#video-update">Video update</a></li>
 </ul>
@@ -189,11 +192,11 @@ can provide an interrupt when it overflows.</p>
 <span class="n">gb</span><span class="o">-&gt;</span><span class="n">clock</span><span class="p">.</span><span class="n">TimerLoading</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 </code></pre>
 
-<p><a name="#regff04"></a>The divider and timer actually share a single underlying
+<p><a name="regff04"></a>The divider and timer actually share a single underlying
 16-bit cycle counter which is incremented on each clock cycle. The top 8 bits of
 this counter is exposed directly as the divider register at <code>0xFF04</code>. Writing
 any value to the divider resets the internal 16-bit counter to zero.</p>
-<p><a name="#regff05"></a><a name="#regff06"></a><a name="#regff07"></a>The timer
+<p><a name="regff05"></a><a name="regff06"></a><a name="regff07"></a>The timer
 counter register increments at a rate configured by the timer control register.
 When it overflows an interrupt is set and it is reloaded from the timer modulo
 register. When to increment the timer counter is determined by a falling edge
@@ -2774,8 +2777,8 @@ bank the index is a signed integer in the range -128 to 127.</p>
 </code></pre>
 
 <h2 id="palettes-0xff47-0xff49">Palettes (<code>0xFF47</code> - <code>0xFF49</code>)</h2>
-<p>There are three palettes, which map from the two-bit input colour from the
-sprite to the two-bit output colour which will be displayed on the LCD. These
+<p>There are three palettes, which map from the two-bit input colour from the tile
+pixel to the two-bit output colour which will be displayed on the LCD. These
 palettes are each stored in a single byte; bits 0-1 are the output colour for
 sprite colour 0, bits 2-3 are the output colour for sprite colour 1, bits 4-5
 are the output colour for sprite colour 2, and bits 6-7 for sprite colour 3.</p>
@@ -2788,14 +2791,127 @@ are the output colour for sprite colour 2, and bits 6-7 for sprite colour 3.</p>
 </code></pre>
 
 <p><a name="regff47"></a>
-There is a single palette for the background sprites at address <code>0xFF47</code>.</p>
+There is a single palette for the background tiles at address <code>0xFF47</code>.</p>
 <p><a name="regff48"></a><a name="regff49"></a>
-There are two object palettes, which can be selected per-object based on a bit
-in the object's attributes.</p>
+There are two object palettes (at <code>0xFF48</code>, <code>0xFF49</code>), which can be selected
+per-object based on a bit in the object's attributes.</p>
 <h2 id="video-control-registers">Video control registers</h2>
+<p><a name="regff40"></a></p>
+<h2 id="lcd-control-0xff40">LCD Control (<code>0xFF40</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Bits (LSB=0)</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Background &amp; Window enable</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Object enable</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Object size (0=8x8, 1=8x16)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Background tile map select (0=low, 1=high)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Background &amp; Window tile bank select (0=high, 1=low)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Window enable</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Window tile map select (0=low, 1=high)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>LCD Enable</td>
+</tr>
+</tbody>
+</table>
+<p>The LCD enable must only be set to 0 during VBlank!</p>
+<p><a name="regff41"></a></p>
+<h2 id="lcd-status-0xff41">LCD Status (<code>0xFF41</code>)</h2>
+<p><a name="regff44"></a><a name="regff45"></a></p>
+<h2 id="lcd-y-y-compare-0xff44-0xff45">LCD Y &amp; Y Compare (<code>0xFF44</code> &amp; <code>0xFF45</code>)</h2>
 <h2 id="background">Background</h2>
+<p><a name="regff42"></a><a name="regff43"></a>
+The background can be scrolled with pixel precision using the Scroll X and
+Scroll Y registers (<code>0xFF42</code> &amp; <code>0xFF43</code>). These registers define the pixel
+coordinate in the 256x256 tile mapped background which will be displayed in the
+top left of the screen.</p>
 <h2 id="window">Window</h2>
-<h2 id="objects">Objects</h2>
+<p><a name="regff4a"></a><a name="regff4b"></a>
+Unlike the background the window cannot be scrolled. The Window X and Window Y
+registers (<code>0xFF4A</code> &amp; <code>0xFF4B</code>) define the screen pixel coordinate at which the
+top left of the window tilemap is drawn.</p>
+<h2 id="objects-sprites">Objects (Sprites)</h2>
+<p>Objects/sprites are made up of one or two tiles (8x8 or 8x16 pixels, selected in
+the LCD Control register) positioned at exact pixel coordinates. Up to 40
+objects can be specified in the Object Attribute Memory (OAM), at addresses
+<code>0xFE00</code> - <code>0xFE9F</code>. Each object definition is 4 bytes, consiting of Y
+coordinate, X coordinate, tile index, and attributes (1 byte each, in that
+order). The X coordinates are offset by -8 pixels (i,e. an X coordinate of 8
+places the first column of the object tile in the first screen column), and Y
+coordinates are offset by -16 in a similar way. This allows positioning objects
+partially on screen. The tile index is the index of the tile to use for the
+object, always in the low tile bank.</p>
+<p>The object attribute byte is made up of the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Bits (0=LSB)</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-3</td>
+<td>Unused (given meaning on Gameboy Colour)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Palette selection (0 = Object Palette 0, 1 = Object Palette 1)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>X Flip - object image is flipped horizontally</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Y Flip - object image is flipped veritcally</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Priority - (0 = object always on top of background &amp; window, 1 = object only on top of colour 0 pixels of window &amp; background)</td>
+</tr>
+</tbody>
+</table>
+<p>When in double height (8x16) object mode (selected in the LCD control register)
+each object is made up of two adjacent tiles in the low tile bank. The
+least-significant bit of the tile index is ignored, the first (even numbered)
+tile makes up the top half of the object and the second (odd numbered) tile
+makes up the bottom half. Note that Y Flip applies to the whole 8x16 pixel
+object, not the two tiles individually.</p>
+<p>Objects which overlap are drawn in priority order: first by smallest X
+coordinate and then (for objects with the same X coordinate) by smallest address
+in OAM. Only a maximum of 10 objects can be drawn on a single scanline; these
+are the 10 object with the highest priority (i.e. the leftmost 10, with ties
+broken by lowest OAM address).</p>
+<p>Objects with a Y coordinate of 0 or &gt;= 160 will be ignored (as they are entirely
+off-screen), however objects with an X coordinate of 0 will not be visible but
+still count towards the object count of that scanline!</p>
 <pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="gpu_functions0" href="#gpu_functions0">gpu functions</a><span class="chunk-index"> (0 <a href="#gpu_functions1">1</a> <a href="#gpu_functions2">2</a>)</span> &gt;&gt=
 &lt;&lt <a href="#video_helpers0">video helpers</a> &gt;&gt;
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">video_readSprites</span><span class="p">(</span><span class="k">struct</span> <span class="n">Gameboy</span><span class="o">*</span> <span class="n">gb</span><span class="p">,</span> <span class="kt">int</span> <span class="n">scanlineNum</span><span class="p">)</span>

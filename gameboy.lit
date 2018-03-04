@@ -110,12 +110,12 @@ can provide an interrupt when it overflows.
 	gb->clock.TimerOverflow = false;
 	gb->clock.TimerLoading = false;
 
-<a name="#regff04"></a>The divider and timer actually share a single underlying
+<a name="regff04"></a>The divider and timer actually share a single underlying
 16-bit cycle counter which is incremented on each clock cycle. The top 8 bits of
 this counter is exposed directly as the divider register at `0xFF04`. Writing
 any value to the divider resets the internal 16-bit counter to zero.
 
-<a name="#regff05"></a><a name="#regff06"></a><a name="#regff07"></a>The timer
+<a name="regff05"></a><a name="regff06"></a><a name="regff07"></a>The timer
 counter register increments at a rate configured by the timer control register.
 When it overflows an interrupt is set and it is reloaded from the timer modulo
 register. When to increment the timer counter is determined by a falling edge
@@ -2645,8 +2645,8 @@ bank the index is a signed integer in the range -128 to 127.
 	gb->lcd.FrameProgress = 0;
 
 ## Palettes (`0xFF47` - `0xFF49`)
-There are three palettes, which map from the two-bit input colour from the
-sprite to the two-bit output colour which will be displayed on the LCD. These
+There are three palettes, which map from the two-bit input colour from the tile
+pixel to the two-bit output colour which will be displayed on the LCD. These
 palettes are each stored in a single byte; bits 0-1 are the output colour for
 sprite colour 0, bits 2-3 are the output colour for sprite colour 1, bits 4-5
 are the output colour for sprite colour 2, and bits 6-7 for sprite colour 3.
@@ -2659,24 +2659,91 @@ are the output colour for sprite colour 2, and bits 6-7 for sprite colour 3.
 	}
 
 <a name="regff47"></a>
-There is a single palette for the background sprites at address `0xFF47`.
+There is a single palette for the background tiles at address `0xFF47`.
 
 
 <a name="regff48"></a><a name="regff49"></a>
-There are two object palettes, which can be selected per-object based on a bit
-in the object's attributes.
+There are two object palettes (at `0xFF48`, `0xFF49`), which can be selected
+per-object based on a bit in the object's attributes.
 
 
 ## Video control registers
 
+<a name="regff40"></a>
+## LCD Control (`0xFF40`)
+
+Bits (LSB=0) | Function
+-------------|---------
+0            | Background & Window enable
+1            | Object enable
+2            | Object size (0=8x8, 1=8x16)
+3            | Background tile map select (0=low, 1=high)
+4            | Background & Window tile bank select (0=high, 1=low)
+5            | Window enable
+6            | Window tile map select (0=low, 1=high)
+7            | LCD Enable
+
+The LCD enable must only be set to 0 during VBlank!
+
+<a name="regff41"></a>
+## LCD Status (`0xFF41`)
+
+<a name="regff44"></a><a name="regff45"></a>
+## LCD Y & Y Compare (`0xFF44` & `0xFF45`)
 
 ## Background
 
+<a name="regff42"></a><a name="regff43"></a>
+The background can be scrolled with pixel precision using the Scroll X and
+Scroll Y registers (`0xFF42` & `0xFF43`). These registers define the pixel
+coordinate in the 256x256 tile mapped background which will be displayed in the
+top left of the screen.
 
 ## Window
 
+<a name="regff4a"></a><a name="regff4b"></a>
+Unlike the background the window cannot be scrolled. The Window X and Window Y
+registers (`0xFF4A` & `0xFF4B`) define the screen pixel coordinate at which the
+top left of the window tilemap is drawn.
 
-## Objects
+## Objects (Sprites)
+Objects/sprites are made up of one or two tiles (8x8 or 8x16 pixels, selected in
+the LCD Control register) positioned at exact pixel coordinates. Up to 40
+objects can be specified in the Object Attribute Memory (OAM), at addresses
+`0xFE00` - `0xFE9F`. Each object definition is 4 bytes, consiting of Y
+coordinate, X coordinate, tile index, and attributes (1 byte each, in that
+order). The X coordinates are offset by -8 pixels (i,e. an X coordinate of 8
+places the first column of the object tile in the first screen column), and Y
+coordinates are offset by -16 in a similar way. This allows positioning objects
+partially on screen. The tile index is the index of the tile to use for the
+object, always in the low tile bank.
+
+The object attribute byte is made up of the following fields:
+
+Bits (0=LSB) | Meaning
+-------------|--------
+     0-3     | Unused (given meaning on Gameboy Colour)
+     4       | Palette selection (0 = Object Palette 0, 1 = Object Palette 1)
+     5       | X Flip - object image is flipped horizontally
+     6       | Y Flip - object image is flipped veritcally
+     7       | Priority - (0 = object always on top of background & window, 1 = object only on top of colour 0 pixels of window & background)
+
+When in double height (8x16) object mode (selected in the LCD control register)
+each object is made up of two adjacent tiles in the low tile bank. The
+least-significant bit of the tile index is ignored, the first (even numbered)
+tile makes up the top half of the object and the second (odd numbered) tile
+makes up the bottom half. Note that Y Flip applies to the whole 8x16 pixel
+object, not the two tiles individually.
+
+Objects which overlap are drawn in priority order: first by smallest X
+coordinate and then (for objects with the same X coordinate) by smallest address
+in OAM. Only a maximum of 10 objects can be drawn on a single scanline; these
+are the 10 object with the highest priority (i.e. the leftmost 10, with ties
+broken by lowest OAM address).
+
+Objects with a Y coordinate of 0 or >= 160 will be ignored (as they are entirely
+off-screen), however objects with an X coordinate of 0 will not be visible but
+still count towards the object count of that scanline!
 
 	<< gpu functions >>=
 	<< video helpers >>
