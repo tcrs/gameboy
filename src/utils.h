@@ -20,6 +20,7 @@
 #endif
 
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 #include "gameboy.h"
 
@@ -59,7 +60,7 @@ static int LoadROM(struct Gameboy* gb, char const* filename)
 {
 #if WANT_MINIZIP
 	unsigned fl = strlen(filename);
-	if(fl > 4 && strcmp(&filename[fl - 4], ".zip") == 0) {
+	if(fl > 4 && strcasecmp(&filename[fl - 4], ".zip") == 0) {
 		unzFile rom = unzOpen(filename);
 		if(rom == NULL) {
 			fprintf(stderr, "Could not open %s\n", filename);
@@ -70,18 +71,31 @@ static int LoadROM(struct Gameboy* gb, char const* filename)
 			fprintf(stderr, "Could get global zip info: %s\n", filename);
 			return 1;
 		}
-		if(gi.number_entry != 1) {
-			fprintf(stderr, "Zip file contains multiple files: %s\n", filename);
-			return 1;
-		}
 		if(unzGoToFirstFile(rom) != UNZ_OK) {
 			fprintf(stderr, "Could not move to first file in zip: %s\n", filename);
 			return 1;
 		}
 		unz_file_info fileinfo;
-		if(unzGetCurrentFileInfo(rom, &fileinfo, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK) {
-			fprintf(stderr, "Could not get current file info: %s\n", filename);
-			return 1;
+		char cur_name[1024];
+		for(unsigned int fi = 0; fi < gi.number_entry; fi += 1)
+		{
+			if(unzGetCurrentFileInfo(rom, &fileinfo, cur_name, sizeof(cur_name), NULL, 0, NULL, 0) != UNZ_OK) {
+				fprintf(stderr, "Could not get current file info: %s\n", filename);
+				return 1;
+			}
+
+			/* Either file which ends in ".gb" or last file in zip */
+			cur_name[sizeof(cur_name) - 1] = '\0';
+			size_t len = strlen(cur_name);
+			if(len >= 3 && cur_name[len - 1] == 'b' && cur_name[len - 2] == 'g' && cur_name[len - 3] == '.') {
+				break;
+			}
+			else if(fi != gi.number_entry - 1) {
+				if(unzGoToNextFile(rom) != UNZ_OK) {
+					fprintf(stderr, "Could not move to next file in zip: %s\n", filename);
+					return 1;
+				}
+			}
 		}
 		if(fileinfo.uncompressed_size > Cart_MaxROMSize) {
 			fprintf(stderr, "Uncompressed file size too large: %s\n", filename);
