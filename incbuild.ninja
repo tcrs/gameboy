@@ -1,5 +1,5 @@
 rule lit-doc
-    command = $gbroot/tools/literate.py --css=default.css --css=defaults-pygments.css --title Gameboy -o $out $in
+    command = $gbroot/tools/literate.py --css=default.css --css=pygments-default.css --title Gameboy -o $out $in
 
 rule lit-code
     command = $gbroot/tools/literate.py --code $root -o $out $in
