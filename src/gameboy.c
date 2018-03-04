@@ -107,6 +107,10 @@ void clock_increment(struct Gameboy* gb)
     }
     clock_countChange(gb, gb->clock.CycleCount + 4);
     dma_update(gb);
+    /* Video runs at 1 pixel per clock (4 per machine cycle) */
+    video_update(gb);
+    video_update(gb);
+    video_update(gb);
     video_update(gb);
 }
 static bool clock_getTimerBit(uint8_t control, uint16_t cycles)
@@ -1337,7 +1341,7 @@ static void video_readSprites(struct Gameboy* gb, int scanlineNum)
     unsigned int spriteHeight = (gb->mem.IO[IO_LCDControl] & 0x04)? 16 : 8;
 
     /* Collect all the sprites on the current scanline */
-    unsigned int nextSprite = 0;
+    unsigned int numSprites = 0;
     struct GameboySprite* sprites = gb->lcd.ScanlineSprites;
 
     for(unsigned int i = 0; i < 160; i += 4) {
@@ -1349,9 +1353,12 @@ static void video_readSprites(struct Gameboy* gb, int scanlineNum)
         if(ypos > 0 && ypos < 160 && xpos < 168) { /* on screen */
             if(scanlineNum + 16 >= ypos && scanlineNum + 16 < ypos + spriteHeight) { /* in scanline */
                 /* Insert the sprite into the list, keeping the list in priority order */
-                unsigned int insPos = nextSprite;
+                assert(numSprites <= 10);
+                unsigned int insPos = numSprites;
                 while(insPos > 0 && sprites[insPos - 1].x > xpos) {
-                    sprites[insPos] = sprites[insPos - 1];
+                    if(insPos < 10) {
+                        sprites[insPos] = sprites[insPos - 1];
+                    }
                     insPos -= 1;
                 }
                 if(insPos < 10) {
@@ -1372,13 +1379,16 @@ static void video_readSprites(struct Gameboy* gb, int scanlineNum)
                     sprites[insPos].pixels[0] = gb->mem.VideoRAM[tileAddr];
                     sprites[insPos].pixels[1] = gb->mem.VideoRAM[tileAddr + 1];
                     sprites[insPos].attrs = attr;
-                    nextSprite += 1;
+
+                    if(insPos >= numSprites) {
+                        numSprites = insPos + 1;
+                    }
                 }
             }
         }
     }
 
-    gb->lcd.NumSprites = nextSprite > 10? 10 : nextSprite;
+    gb->lcd.NumSprites = numSprites;
 }
 static void video_drawPixel(struct Gameboy* gb, unsigned int scanlineNum, unsigned int x)
 {

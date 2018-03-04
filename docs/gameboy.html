@@ -155,7 +155,7 @@ access a single byte of memory.</p>
 <pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="clock_functions0" href="#clock_functions0">clock functions</a><span class="chunk-index"> (0 <a href="#clock_functions1">1</a> <a href="#clock_functions2">2</a> <a href="#clock_functions3">3</a> <a href="#clock_functions4">4</a>)</span> &gt;&gt=
 <span class="kt">void</span> <span class="nf">clock_increment</span><span class="p">(</span><span class="k">struct</span> <span class="n">Gameboy</span><span class="o">*</span> <span class="n">gb</span><span class="p">)</span>
 <span class="p">{</span>
-    &lt;&lt <a href="#per_clock_cycle_updates0">per clock cycle updates</a> &gt;&gt;
+    &lt;&lt <a href="#per_machine_cycle_updates0">per machine cycle updates</a> &gt;&gt;
 <span class="p">}</span>
 </code></pre>
 
@@ -168,7 +168,7 @@ access a single byte of memory.</p>
 <span class="n">gb</span><span class="o">-&gt;</span><span class="n">TotalCycles</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </code></pre>
 
-<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_clock_cycle_updates0" href="#per_clock_cycle_updates0">per clock cycle updates</a><span class="chunk-index"> (0 <a href="#per_clock_cycle_updates1">1</a> <a href="#per_clock_cycle_updates2">2</a> <a href="#per_clock_cycle_updates3">3</a> <a href="#per_clock_cycle_updates4">4</a>)</span> &gt;&gt=
+<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_machine_cycle_updates0" href="#per_machine_cycle_updates0">per machine cycle updates</a><span class="chunk-index"> (0 <a href="#per_machine_cycle_updates1">1</a> <a href="#per_machine_cycle_updates2">2</a> <a href="#per_machine_cycle_updates3">3</a> <a href="#per_machine_cycle_updates4">4</a>)</span> &gt;&gt=
 <span class="n">gb</span><span class="o">-&gt;</span><span class="n">TotalCycles</span> <span class="o">+=</span> <span class="mi">4</span><span class="p">;</span>
 </code></pre>
 
@@ -239,7 +239,7 @@ register).</p>
 <span class="p">}</span>
 </code></pre>
 
-<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_clock_cycle_updates1" href="#per_clock_cycle_updates0">per clock cycle updates</a><span class="chunk-index"> (<a href="#per_clock_cycle_updates0">0</a> 1 <a href="#per_clock_cycle_updates2">2</a> <a href="#per_clock_cycle_updates3">3</a> <a href="#per_clock_cycle_updates4">4</a>)</span> &gt;&gt=
+<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_machine_cycle_updates1" href="#per_machine_cycle_updates0">per machine cycle updates</a><span class="chunk-index"> (<a href="#per_machine_cycle_updates0">0</a> 1 <a href="#per_machine_cycle_updates2">2</a> <a href="#per_machine_cycle_updates3">3</a> <a href="#per_machine_cycle_updates4">4</a>)</span> &gt;&gt=
 <span class="n">gb</span><span class="o">-&gt;</span><span class="n">clock</span><span class="p">.</span><span class="n">TimerLoading</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 <span class="k">if</span><span class="p">(</span><span class="n">gb</span><span class="o">-&gt;</span><span class="n">clock</span><span class="p">.</span><span class="n">TimerOverflow</span><span class="p">)</span> <span class="p">{</span>
     <span class="cm">/* Delayed overflow effects */</span>
@@ -317,7 +317,7 @@ register.</p>
 <span class="p">}</span>
 </code></pre>
 
-<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_clock_cycle_updates2" href="#per_clock_cycle_updates0">per clock cycle updates</a><span class="chunk-index"> (<a href="#per_clock_cycle_updates0">0</a> <a href="#per_clock_cycle_updates1">1</a> 2 <a href="#per_clock_cycle_updates3">3</a> <a href="#per_clock_cycle_updates4">4</a>)</span> &gt;&gt=
+<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_machine_cycle_updates2" href="#per_machine_cycle_updates0">per machine cycle updates</a><span class="chunk-index"> (<a href="#per_machine_cycle_updates0">0</a> <a href="#per_machine_cycle_updates1">1</a> 2 <a href="#per_machine_cycle_updates3">3</a> <a href="#per_machine_cycle_updates4">4</a>)</span> &gt;&gt=
 <span class="n">clock_countChange</span><span class="p">(</span><span class="n">gb</span><span class="p">,</span> <span class="n">gb</span><span class="o">-&gt;</span><span class="n">clock</span><span class="p">.</span><span class="n">CycleCount</span> <span class="o">+</span> <span class="mi">4</span><span class="p">);</span>
 </code></pre>
 
@@ -2672,7 +2672,7 @@ active (and low memory accesses are blocked).</p>
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">dma_update</span><span class="p">(</span><span class="k">struct</span> <span class="n">Gameboy</span><span class="o">*</span><span class="p">);</span>
 </code></pre>
 
-<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_clock_cycle_updates3" href="#per_clock_cycle_updates0">per clock cycle updates</a><span class="chunk-index"> (<a href="#per_clock_cycle_updates0">0</a> <a href="#per_clock_cycle_updates1">1</a> <a href="#per_clock_cycle_updates2">2</a> 3 <a href="#per_clock_cycle_updates4">4</a>)</span> &gt;&gt=
+<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_machine_cycle_updates3" href="#per_machine_cycle_updates0">per machine cycle updates</a><span class="chunk-index"> (<a href="#per_machine_cycle_updates0">0</a> <a href="#per_machine_cycle_updates1">1</a> <a href="#per_machine_cycle_updates2">2</a> 3 <a href="#per_machine_cycle_updates4">4</a>)</span> &gt;&gt=
 <span class="n">dma_update</span><span class="p">(</span><span class="n">gb</span><span class="p">);</span>
 </code></pre>
 
@@ -2920,7 +2920,7 @@ still count towards the object count of that scanline!</p>
     <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">spriteHeight</span> <span class="o">=</span> <span class="p">(</span><span class="n">gb</span><span class="o">-&gt;</span><span class="n">mem</span><span class="p">.</span><span class="n">IO</span><span class="p">[</span><span class="n">IO_LCDControl</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x04</span><span class="p">)</span><span class="o">?</span> <span class="mi">16</span> <span class="o">:</span> <span class="mi">8</span><span class="p">;</span>
 
     <span class="cm">/* Collect all the sprites on the current scanline */</span>
-    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">nextSprite</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">numSprites</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">GameboySprite</span><span class="o">*</span> <span class="n">sprites</span> <span class="o">=</span> <span class="n">gb</span><span class="o">-&gt;</span><span class="n">lcd</span><span class="p">.</span><span class="n">ScanlineSprites</span><span class="p">;</span>
 
     <span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">160</span><span class="p">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
@@ -2932,9 +2932,12 @@ still count towards the object count of that scanline!</p>
         <span class="k">if</span><span class="p">(</span><span class="n">ypos</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ypos</span> <span class="o">&lt;</span> <span class="mi">160</span> <span class="o">&amp;&amp;</span> <span class="n">xpos</span> <span class="o">&lt;</span> <span class="mi">168</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* on screen */</span>
             <span class="k">if</span><span class="p">(</span><span class="n">scanlineNum</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">&gt;=</span> <span class="n">ypos</span> <span class="o">&amp;&amp;</span> <span class="n">scanlineNum</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">&lt;</span> <span class="n">ypos</span> <span class="o">+</span> <span class="n">spriteHeight</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* in scanline */</span>
                 <span class="cm">/* Insert the sprite into the list, keeping the list in priority order */</span>
-                <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">insPos</span> <span class="o">=</span> <span class="n">nextSprite</span><span class="p">;</span>
+                <span class="n">assert</span><span class="p">(</span><span class="n">numSprites</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">);</span>
+                <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">insPos</span> <span class="o">=</span> <span class="n">numSprites</span><span class="p">;</span>
                 <span class="k">while</span><span class="p">(</span><span class="n">insPos</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">xpos</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span><span class="p">]</span> <span class="o">=</span> <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">insPos</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span><span class="p">]</span> <span class="o">=</span> <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+                    <span class="p">}</span>
                     <span class="n">insPos</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
                 <span class="p">}</span>
                 <span class="k">if</span><span class="p">(</span><span class="n">insPos</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
@@ -2955,13 +2958,16 @@ still count towards the object count of that scanline!</p>
                     <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span><span class="p">].</span><span class="n">pixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">gb</span><span class="o">-&gt;</span><span class="n">mem</span><span class="p">.</span><span class="n">VideoRAM</span><span class="p">[</span><span class="n">tileAddr</span><span class="p">];</span>
                     <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span><span class="p">].</span><span class="n">pixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">gb</span><span class="o">-&gt;</span><span class="n">mem</span><span class="p">.</span><span class="n">VideoRAM</span><span class="p">[</span><span class="n">tileAddr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
                     <span class="n">sprites</span><span class="p">[</span><span class="n">insPos</span><span class="p">].</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attr</span><span class="p">;</span>
-                    <span class="n">nextSprite</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+                    <span class="k">if</span><span class="p">(</span><span class="n">insPos</span> <span class="o">&gt;=</span> <span class="n">numSprites</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">numSprites</span> <span class="o">=</span> <span class="n">insPos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+                    <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="n">gb</span><span class="o">-&gt;</span><span class="n">lcd</span><span class="p">.</span><span class="n">NumSprites</span> <span class="o">=</span> <span class="n">nextSprite</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">?</span> <span class="mi">10</span> <span class="o">:</span> <span class="n">nextSprite</span><span class="p">;</span>
+    <span class="n">gb</span><span class="o">-&gt;</span><span class="n">lcd</span><span class="p">.</span><span class="n">NumSprites</span> <span class="o">=</span> <span class="n">numSprites</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -3029,7 +3035,11 @@ still count towards the object count of that scanline!</p>
 <span class="kt">void</span> <span class="nf">video_update</span><span class="p">(</span><span class="k">struct</span> <span class="n">Gameboy</span><span class="o">*</span> <span class="n">gb</span><span class="p">);</span>
 </code></pre>
 
-<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_clock_cycle_updates4" href="#per_clock_cycle_updates0">per clock cycle updates</a><span class="chunk-index"> (<a href="#per_clock_cycle_updates0">0</a> <a href="#per_clock_cycle_updates1">1</a> <a href="#per_clock_cycle_updates2">2</a> <a href="#per_clock_cycle_updates3">3</a> 4)</span> &gt;&gt=
+<pre class="codehilite"><code>&lt;&lt; <a class="code-chunk" id="per_machine_cycle_updates4" href="#per_machine_cycle_updates0">per machine cycle updates</a><span class="chunk-index"> (<a href="#per_machine_cycle_updates0">0</a> <a href="#per_machine_cycle_updates1">1</a> <a href="#per_machine_cycle_updates2">2</a> <a href="#per_machine_cycle_updates3">3</a> 4)</span> &gt;&gt=
+<span class="cm">/* Video runs at 1 pixel per clock (4 per machine cycle) */</span>
+<span class="n">video_update</span><span class="p">(</span><span class="n">gb</span><span class="p">);</span>
+<span class="n">video_update</span><span class="p">(</span><span class="n">gb</span><span class="p">);</span>
+<span class="n">video_update</span><span class="p">(</span><span class="n">gb</span><span class="p">);</span>
 <span class="n">video_update</span><span class="p">(</span><span class="n">gb</span><span class="p">);</span>
 </code></pre>
 
