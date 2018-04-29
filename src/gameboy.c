@@ -611,7 +611,7 @@ void cpu_step(struct Gameboy* gb)
         clock_increment(gb);
         gb->cpu.SP = ReadHL(gb);
         break;
-    case 0xF8: { // ld $hl, ($sp + imm8)
+    case 0xF8: { // ld $hl, $sp + imm8
         uint16_t ea = gb->cpu.SP + Imm8i(gb);
         clock_increment(gb);
         WriteHL(gb, ea);

@@ -645,10 +645,10 @@ The stack pointer (`SP`) can be set to an immediate value or the value of `HL`.
 		gb->cpu.SP = ReadHL(gb);
 		break;
 
-Bytes can be loaded from an address relative to the stack pointer.
+The stack pointer plus a signed immediate offset can be loaded into HL.
 
 	<< cpu instructions >>=
-	case 0xF8: { // ld $hl, ($sp + imm8)
+	case 0xF8: { // ld $hl, $sp + imm8
 		uint16_t ea = gb->cpu.SP + Imm8i(gb);
 		clock_increment(gb);
 		WriteHL(gb, ea);
