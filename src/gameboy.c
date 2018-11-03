@@ -1380,8 +1380,8 @@ static void video_readSprites(struct Gameboy* gb, int scanlineNum)
                     sprites[insPos].pixels[1] = gb->mem.VideoRAM[tileAddr + 1];
                     sprites[insPos].attrs = attr;
 
-                    if(insPos >= numSprites) {
-                        numSprites = insPos + 1;
+                    if(numSprites < 10) {
+                        numSprites += 1;
                     }
                 }
             }
@@ -1427,7 +1427,7 @@ static void video_drawPixel(struct Gameboy* gb, unsigned int scanlineNum, unsign
                 if(x + 8 >= sprites[n].x && x + 8 < sprites[n].x + 8) {
                     unsigned int tileX = x + 8 - sprites[n].x;
                     bool const mirrored = (sprites[n].attrs & 0x20);
-                    uint8_t pixel = video_linePixel(sprites[n].pixels, mirrored? (8 - tileX) : tileX);
+                    uint8_t pixel = video_linePixel(sprites[n].pixels, mirrored? (7 - tileX) : tileX);
 
                     if(pixel) {
                         bool hasPriority = (sprites[n].attrs & 0x80) == 0;
